@@ -86,8 +86,7 @@ def customer_home(request):
                 error_msg = 'Invalid Username Or Password'
                 return render(request,'customer/customer_home.html',{'error_msg':error_msg}) 
                    
-    product_list=Product.objects.all()
-    # product_list=Product.objects.filter([id == [4]])
+    product_list=Product.objects.all() 
     return render(request,'customer/customer_home.html',{'products':product_list,'error_msg':msg})
     
 

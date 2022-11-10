@@ -31,7 +31,11 @@ def r_approve(request,reseller_id):
     subject = 'welcome to ecommerce  world'
     message = f'Hi {reseller1.s_name}, thank you for registering in ecommerce application.'
     email_from = settings.EMAIL_HOST_USER
+<<<<<<< HEAD
     recipient_list = ['suvarna007bars@gmail.com']
+=======
+    recipient_list = ['anupamaunni612@gmail.com']
+>>>>>>> e833712a6989c9db033bb0a9153481d799a71b50
     send_mail( subject, message, email_from, recipient_list )
     return redirect('ecom_admin:approve_reseller')
 
