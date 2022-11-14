@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 
 from reseller_app.models import Product, Reseller
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -68,6 +69,13 @@ def seller_logout(request):
     del request.session['s_id']
     request.session.flush()
     return redirect('customer:home')
+
+def get_product(request):
+    product_no=request.POST['p_no']
+    product=Product.objects.get(p_number=product_no).p_stock
+    return JsonResponse({'products':product})
+    
+
 
  
  

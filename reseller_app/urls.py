@@ -16,5 +16,6 @@ urlpatterns = [
     path('sellerac',views.seller_ac, name='seller-acnt'),
     path('editac',views.edit_ac, name='edit-acc'),
     path('seller_logot',views.seller_logout, name='seller_logout'),
+    path('get_product',views.get_product, name='get_product'),
     
 ]

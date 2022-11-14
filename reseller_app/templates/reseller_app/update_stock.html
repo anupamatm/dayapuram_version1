@@ -21,9 +21,9 @@
 
     <tr>
         <td><label for="exampleFormControlSelect1" class="lable m-3">Product No</label></td>
-        <td> <select class="form-control drop format  d-inline" id="exampleFormControlSelect1">
-            <option>p1-090</option>
-            <option>p1-090</option>
+        <td> <select class="form-control drop format  d-inline" id="p_no">
+            <option value="">p1-090</option>
+            <option >p1-090</option>
             <option>p1-090</option>
             <option>p1-090</option>
             
@@ -36,7 +36,7 @@
 
       </td>
       <td>
-        <input type="text" class="form-control  format d-inline"  readonly id="exampleFormControlInput1" placeholder="">
+        <input type="text" class="form-control  format d-inline"  readonly id="c_stock" placeholder="">
 
       </td>
     </tr>
@@ -71,5 +71,38 @@
 
 
 </form>
+
+
+<script>
+  $(document).ready(function(){
+    $.ajaxSetup({
+        headers: {
+          "X-CSRFToken": $('[name=csrfmiddlewaretoken]').val()
+        }
+    })
+    $('#p_no').change(function(){
+        var p_no = $('#p_no').val()
+        $.ajax({
+            type:'POST',
+            url:"{% url 'reseller:get_product' %}",
+            data:{
+                'p_no':p_no
+            },
+            success:function(response){
+                if (response.status == true)
+                {
+                    $('#c_stock').html("njkjlbknkn")
+                    
+                }
+                else
+                {
+                  alert("error ocured")
+                }                
+            }
+        })
+    })
+})
+</script>
+
 
 {% endblock %}
