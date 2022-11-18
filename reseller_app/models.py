@@ -17,6 +17,7 @@ class Reseller(models.Model):
     s_status = models.CharField(max_length=12,default="pending")
 
 class Product(models.Model):
+    p_category = models.CharField(max_length=40,default="")
     p_name = models.CharField(max_length=30)
     seller_id = models.ForeignKey(Reseller, on_delete = models.CASCADE)
     p_number = models.BigIntegerField()

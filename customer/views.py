@@ -86,8 +86,8 @@ def customer_home(request):
                 error_msg = 'Invalid Username Or Password'
                 return render(request,'customer/customer_home.html',{'error_msg':error_msg}) 
                    
-    product_list=Product.objects.all() 
-    return render(request,'customer/customer_home.html',{'products':product_list,'error_msg':msg})
+    latest_product_list = Product.objects.all()
+    return render(request,'customer/customer_home.html',{'products':latest_product_list,'error_msg':msg})
     
 
 @auth_customer
@@ -150,8 +150,10 @@ def edit_form(request):
     return render(request,'customer/editform.html')
 @auth_customer
 def select_address(request):
-    customer_address=Customer.objects.get(id=request.session['c_id']) #select * from table where   
+    customer_address=Customer.objects.get(id=request.session['c_id']) #select * from table where
+
     return render(request,'customer/address.html',{'customer_address':customer_address})
+
 @auth_customer
 def c_payment(request):
     return render(request,'customer/payment.html')
