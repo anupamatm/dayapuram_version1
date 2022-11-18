@@ -1,4 +1,5 @@
 from django.shortcuts import render,redirect
+from customer.models import Customer
 from reseller_app.models import Reseller
 from django.conf import settings
 from django.core.mail import send_mail
@@ -6,7 +7,12 @@ from django.core.mail import send_mail
 # Create your views here.
 
 def admin_home(request):
-    return render(request,'ecom_admin/admin_home.html')
+    
+
+    seller_count = Reseller.objects.all().count()
+    customer_count = Customer.objects.all().count()
+
+    return render(request,'ecom_admin/admin_home.html',{'seller_count':seller_count,'customer_count':customer_count})
 
 def approve_resellers(request):    
     reseller = Reseller.objects.filter(s_status = "pending")
@@ -17,7 +23,8 @@ def customers_list(request):
     return render(request,'ecom_admin/customers_list.html')
 
 def registered_resellers(request):
-    return render(request,'ecom_admin/registered_resellers.html')
+    reseller_list=Reseller.objects.filter()
+    return render(request,'ecom_admin/registered_resellers.html',{'resellers':reseller_list})
 
 def change_password(request):
     return render(request,'ecom_admin/change_password.html')

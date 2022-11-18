@@ -45,6 +45,8 @@
     <h1 align="center">Select a delivery address</h1>
     <div class="container">
         <div class="main-body">
+            <form action="" method="POST">
+                {% csrf_token %}
             <div class="row">
                 <div class="col-lg-2">
                     <!-- <div class="card">
@@ -66,13 +68,23 @@
                 <div class="col-md-8">
                     <div class="card mb-3">
                         <div class="card-body">
+                          <div class="row">
+                                <div class="col-sm-3">
+                                   <input type="radio" name="address1">
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    <h3 style="color: blue;">Address 1</h3>
+                                    <!-- {{customer_address.first_name}} {{customer_address.last_name}} -->
+                                </div>
+                            </div>
+                            <hr>
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <!-- <h6 class="mb-0">Full Name</h6> -->
+                                    <!-- <h5>Address</h5> -->
                                 </div>
                                 <div class="col-sm-9 text-secondary">
 
-                                    {{customer_address.first_name}} {{customer_address.last_name}}
+                                   <h4> {{customer_address.first_name}} {{customer_address.last_name}}</h4>
                                 </div>
                             </div>
                             <hr>
@@ -81,7 +93,7 @@
                                     <!-- <h6 class="mb-0">Email</h6> -->
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    {{customer_address.address}}
+                                    <h4>{{customer_address.address}}</h4>
                                 </div>
                             </div>
                             <!-- <hr> -->
@@ -92,7 +104,7 @@
                                     <!-- <h6 class="mb-0">Mobile</h6> -->
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    {{customer_address.email}}
+                                   <h4> {{customer_address.email}}</h4>
                                 </div>
                             </div>
                             <hr>
@@ -101,29 +113,74 @@
                                     <!-- <h6 class="mb-0">Address</h6> -->
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    {{customer_address.mobile}}
+                                   <h4> {{customer_address.mobile}}</h4>
+
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                   <input type="radio" name="address1">
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    <h3 style="color: blue;">Address 2</h3>
+                                    <!-- {{customer_address.first_name}} {{customer_address.last_name}} -->
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <!-- <h5>Address</h5> -->
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+
+                                   <h4> {{customer_address.first_name}} {{customer_address.last_name}}</h4>
+                                </div>
+                            </div>
+
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <!-- <h6 class="mb-0">Email</h6> -->
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    <h4>{{customer_address.address}}</h4>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <!-- <h6 class="mb-0">Mobile</h6> -->
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                   <h4> {{customer_address.email}}</h4>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <!-- <h6 class="mb-0">Address</h6> -->
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                   <h4> {{customer_address.mobile}}</h4>
 
                                 </div>
                             </div>
                             <hr>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <a class="btn btn-info " target="__blank"
-                                        href="">Deliver to this address</a>
+                                    <!-- <a class="btn btn-info " target="__blank"
+                                        href="">Deliver to this address</a> -->
+
+                                    <button class="btn btn-primary px-4">Deliver to this address</button>
                                 </div>
                             </div>
                             <hr>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <a class="btn btn-info " target="__blank"
-                                        href="">Edit Address</a>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <a class="btn btn-info " target="__blank"
-                                        href="">Add delivery instructions</a>
+                                    <!-- <a class="btn btn-info " target="__blank"
+                                        href="">Edit Address</a> -->
+                                        <a href="{% url 'customer:edit_address' %}"><button class="btn btn-primary px-4">Add Address</button></a>
                                 </div>
                             </div>
                         </div>
@@ -131,11 +188,19 @@
                 </div>
 
 
+                <!-- address2  -->
+
+                
+
+                <!-- address2  -->
+
+
 
 
                 <!-- edit  -->
                 <div class="col-lg-2"></div>
             </div>
+            </form>
         </div>
     </div>
     <!-- edit  -->

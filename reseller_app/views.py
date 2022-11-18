@@ -5,8 +5,12 @@ from reseller_app.models import Product, Reseller
 # Create your views here.
 
 def reseller_home(request):
+   
     seller=Reseller.objects.get(id=request.session['s_id'])
-    return render(request,'reseller_app/reseller_home.html',{'seller_details':seller})
+
+    product_count = Product.objects.all().count()
+     
+    return render(request,'reseller_app/reseller_home.html',{'seller_details':seller,'count':product_count})
 
 def product_catalogue(request):
     product_list=Product.objects.filter(seller_id=request.session['s_id']) 
@@ -14,6 +18,7 @@ def product_catalogue(request):
 
 def add_product(request):
     msg=""
+    
     if request.method == 'POST':
             pr_name = request.POST['p_name']            
             pr_number = request.POST['p_no']
@@ -34,9 +39,11 @@ def add_product(request):
                     seller_id_id = request.session['s_id'] )                
                 add_products.save()
                 msg="Product Added Succesfully"
+
             else:
                  msg="product Already Added"
 
+            
     return render(request,'reseller_app/add_product.html',{'status':msg})
 
 def my_order(request):

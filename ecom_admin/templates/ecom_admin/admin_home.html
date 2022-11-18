@@ -1,5 +1,76 @@
 {% extends 'ecom_admin/admin_master.html' %}
 
 {% block content %}
-<p class="welcome">Welcome Admin</p> 
+<!-- <p class="welcome">Welcome Admin</p>  -->
+
+<div class="row">
+    <div class="col-12">
+      <div class="row">
+        <div style="background-color: black; height: 30px;width: 100%;"></div>
+        <div style="background-color: white; height: 100px; width: 100%;" ><p class="welcome">  <marquee behavior="scroll" direction="right"> Welcome Admin</marquee></p></div>
+      </div>
+     <!-- <p class="welcome"> Welcome {{seller_details.s_name|upper}}</p> -->
+      
+    </div>
+  </div>
+  <!-- <p class="welcome"> Welcome {{seller_details.s_name|upper}}</p> -->
+  <div class="row" id="card">
+  <div class="col-sm-3">
+  <div class="center">
+    <div class="property-card">
+      <a href="#">
+        <div class="property-image">
+          <div class="property-image-title">
+  
+            
+            <div>
+              <h5 class="no">{{seller_count}}</h5>
+            </div>
+            
+          </div>
+        </div></a>
+      <div class="property-description">
+        <h5 class="title">Resellers</h5>
+        <!-- <p>Lorem Ipsum Dipsum hortata. Mixcall Horcho. Mixwell Chingo. More Bingo. Lorem Ipum doth be hard.</p> -->
+      </div>
+      <a href="#">
+        <div class="property-social-icons">
+          <!-- I would usually put multipe divs inside here set to flex. Some people might use Ul li. Multiple Solutions -->
+        </div>
+      </a>
+    </div>
+  </div>
+  
+  </div>
+  <!-- col6  -->
+  
+  <div class="col-sm-3">
+  <div class="center">
+    <div class="property-card">
+      <a href="#">
+        <div class="property-image">
+          
+          <div class="property-image-title">
+            
+            <div>
+              <h5 class="no">{{customer_count}}</h5>
+            </div>
+          </div>
+        </div></a>
+      <div class="property-description">
+        <h5 class="title">Customers</h5>
+        <!-- <p>Lorem Ipsum Dipsum hortata. Mixcall Horcho. Mixwell Chingo. More Bingo. Lorem Ipum doth be hard.</p> -->
+      </div>
+      <a href="#">
+        <div class="property-social-icons">
+          <!-- I would usually put multipe divs inside here set to flex. Some people might use Ul li. Multiple Solutions -->
+        </div>
+      </a>
+    </div>
+  </div>
+  
+  </div>
+  <!-- col6  -->
+  
+  </div>
 {% endblock %}

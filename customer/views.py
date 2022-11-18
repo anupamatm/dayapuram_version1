@@ -11,9 +11,6 @@ from django.db.models import F,Sum
 
 def customer_home(request):
     msg = ""
-    if request.method =='GET':
-
-        status = False
     if request.method == 'POST':
         if 'c_signup' in request.POST:
             first_name = request.POST['fname']
@@ -87,7 +84,8 @@ def customer_home(request):
                 return render(request,'customer/customer_home.html',{'error_msg':error_msg}) 
                    
     latest_product_list = Product.objects.all()
-    return render(request,'customer/customer_home.html',{'products':latest_product_list,'error_msg':msg})
+    cart_product_count = AddCart.objects.all().count()
+    return render(request,'customer/customer_home.html',{'products':latest_product_list,'error_msg':msg,'cart_count':cart_product_count})
     
 
 @auth_customer
@@ -103,9 +101,10 @@ def view_cart(request):
         sum=sum+i.total_price
 
     #gt=AddCart.objects.aaggregate(grt =Sum( F('product__p_price') * F('qty')))
-    gt=cart2.aaggregate(grt=Sum(F('total_price')))   
+    gt=cart2.aaggregate(grt=Sum(F('total_price'))) 
 
-    return render(request,'customer/my_cart.html',{'cart_items':cart2,'gt':sum})
+    cart_product_count = AddCart.objects.all().count()
+    return render(request,'customer/my_cart.html',{'cart_items':cart2,'gt':sum,'cart_count':cart_product_count})
     
 @auth_customer
 def del_cart_item(reqest,product_id):
@@ -115,7 +114,8 @@ def del_cart_item(reqest,product_id):
 
 @auth_customer
 def my_order(request):
-    return render(request,'customer/my_orders.html')
+    cart_product_count = AddCart.objects.all().count()
+    return render(request,'customer/my_orders.html',{'cart_count':cart_product_count})
 @auth_customer
 def product_detail(request,product_id):
     if request.method == "POST":
@@ -143,16 +143,60 @@ def product_detail(request,product_id):
 
 @auth_customer
 def my_ac(request):
-    customer_P=Customer.objects.get(id=request.session['c_id']) #select * from table where     
-    return render(request,'customer/my_account.html',{'customer_details':customer_P})
+    customer_P=Customer.objects.get(id=request.session['c_id']) #select * from table where 
+
+    cart_product_count = AddCart.objects.all().count()
+    return render(request,'customer/my_account.html',{'customer_details':customer_P,'cart_count':cart_product_count})
+
 @auth_customer
-def edit_form(request):
-    return render(request,'customer/editform.html')
+def edit_account(request):
+    
+    if request.method == 'POST':
+        customer_edit=Customer.objects.get(id=request.session['c_id'])
+        customer_edit.first_name = request.POST['edit_fname']
+        customer_edit.last_name = request.POST['edit_lname']
+        customer_edit.email = request.POST['edit_email']
+        customer_edit.mobile = request.POST['edit_mobile']
+        customer_edit.address = request.POST['edit_address']   
+        customer_edit.save()
+        return redirect('customer:my-account')
+
+    customer_edit1=Customer.objects.get(id=request.session['c_id'])
+    # view for save changes
+    return render(request,'customer/editaccount.html',{'edit_details':customer_edit1})
+
 @auth_customer
 def select_address(request):
-    customer_address=Customer.objects.get(id=request.session['c_id']) #select * from table where
+     #select * from table where
+    if request.method == 'POST':
+        select_address=Customer.objects.get(id=request.session['c_id'])
+        select_address.address = request.POST['address1']
+        select_address.save()
+        return redirect('customer:c_payment')
+    
+    customer_address1=Customer.objects.get(id=request.session['c_id'])
+    return render(request,'customer/address.html',{'customer_address':customer_address1})
 
-    return render(request,'customer/address.html',{'customer_address':customer_address})
+@auth_customer
+def edit_addresss(request):
+    
+    if request.method == 'POST':
+        new_address=Customer.objects.get(id=request.session['c_id'])
+        new_address.name = request.POST['new_name']
+        new_address.email = request.POST['new_email']
+        new_address.mobile = request.POST['new_mobile']
+        new_address.address = request.POST['new_address']   
+        new_address.save()
+        return redirect('customer:c_payment')
+    #use this address
+    # return render(request,'customer/editaddress.html',{'edit_details':customer_edit})
+    return render(request,'customer/editaddress.html')
+
+@auth_customer
+def order_product(request):
+    userid = request.session['c_id']
+     
+
 
 @auth_customer
 def c_payment(request):

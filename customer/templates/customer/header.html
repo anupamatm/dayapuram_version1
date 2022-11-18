@@ -85,7 +85,7 @@
 
                           <!-- sign up customer form -->
                   <div class="tab-pane fade" id="signup">
-                    <form class="form-horizontal" method="POST" action="{% url 'customer:home' %}">
+                    <form class="form-horizontal" method="POST" action="">
                       {% csrf_token %}
                       <fieldset>
 
@@ -400,15 +400,18 @@
         <div class="col-lg-2 col-md-3 col-sm-4 col-xs-12 animate-dropdown top-cart-row">
           <!-- ============================================================= SHOPPING CART DROPDOWN ============================================================= -->
 
-          <div class="dropdown dropdown-cart"> <a href="#" class="dropdown-toggle lnk-cart">
+          <div class="dropdown dropdown-cart"> 
+            {% if  'c_id' in request.session %} 
+            <a href="{% url 'customer:cart' %}" class="dropdown-toggle lnk-cart">
               <div class="items-cart-inner">
                 <div class="basket">
-                  <div class="basket-item-count"><span class="count">2</span></div>
+                  <div class="basket-item-count"><span class="count">{{cart_count}}</span></div>
                   <div class="total-price-basket"> <span class="lbl">Shopping Cart</span> <span
                       class="value">$4580</span> </div>
                 </div>
               </div>
             </a>
+            {% endif %}
             <ul class="dropdown-menu">
               <li>
                 <div class="cart-item product-summary">

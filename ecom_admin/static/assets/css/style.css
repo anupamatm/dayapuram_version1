@@ -1,8 +1,11 @@
 .welcome{
   text-align: center;
-  margin-top: 200px;
+  margin-top: 5px;
   font-size: 50px;
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
   font-weight: bolder;
-  color: brown;
+  color: black;
 }
+/* .content-wrapper{
+  background-image:url("https://wallpaperaccess.com/full/862206.jpg");
+} */

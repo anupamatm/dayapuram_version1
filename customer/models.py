@@ -44,7 +44,13 @@ class Order_details(models.Model):
     address = models.ForeignKey(Addresslist,on_delete=models.CASCADE)
 
 
- 
+# class Order(models.Model):
+#     customer = models.ForeignKey(Customer,on_delete=models.CASCADE)
+#     product = models.ForeignKey(Product,on_delete=models.CASCADE)
+#     address = models.ForeignKey(Addresslist,on_delete=models.CASCADE)
+#     quantity = models.IntegerField()
+#     status = models.CharField(max_length=20,default="placed") #update after payment confirmed
+    
 
 
 
