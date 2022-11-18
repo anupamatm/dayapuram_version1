@@ -76,12 +76,7 @@
                       </fieldset>
                     </form>
                   </div>
-                  {% if error_msg and not status %}
-
-                          <script>
-                              alert('{{error_msg}}')
-                          </script>
-                          {% endif %}
+                 
 
                           <!-- sign up customer form -->
                   <div class="tab-pane fade" id="signup">
@@ -116,6 +111,7 @@
                           <input class="input" name="c_email" type="text" id="c_mail"><span
                             class="highlight"></span><span class="bar"></span><span id="mail_c"></span>
                           <label class="label" for="date">Email</label>
+                          <span id="message"></span>
                         </div>
 
                         <div class="group">
@@ -151,6 +147,41 @@
           </div>
         </div>
         <!-- customer modal ends -->
+        <script>
+          $(document).ready(function(){
+            $.ajaxSetup({
+                headers: {
+                  "X-CSRFToken": $('[name=csrfmiddlewaretoken]').val()
+                }
+            })
+            $('#c_mail').change(function(){
+                var email = $('#c_mail').val()
+                $.ajax({
+                    type:'POST',
+                    url:"{% url 'customer:e_exists' %}",
+                    data:{
+                        'email':email
+                    },
+                    success:function(response){
+                        if (response.status == true)
+                        {
+                            $('#message').html('email exists')
+                            $('#message').css("color","red")
+                            console.log('email exists')
+                        }
+                        else
+                        {
+                            $('#message').html('email available')
+                            $('#message').css("color","black")
+                            console.log('email available')
+                        }
+                        console.log(response.status)
+                    }
+
+                })
+            })
+        })
+        </script>
 
 
 

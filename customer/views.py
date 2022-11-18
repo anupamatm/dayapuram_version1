@@ -6,6 +6,7 @@ from . decorators import auth_customer
 from customer.models import AddCart, Customer
 from reseller_app.models import Product, Reseller
 from django.db.models import F,Sum
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -61,13 +62,13 @@ def customer_home(request):
             s_password = request.POST['s_password']
             s_pic = request.POST['s_pic']
             email_exists = Reseller.objects.filter(email = s_email).exists()
-            if not email_exists:
+            # if not email_exists:
 
-                reseller = Reseller(s_name = s_name,email = s_email,mobile = s_mobile,address = s_address,account_no =s_account,ifsc = s_ifsc,
-                s_acholdername = s_acholder,password = s_password,s_pic = s_pic)
-                reseller.save()
-            else:
-                msg="email already exists"              
+            reseller = Reseller(s_name = s_name,email = s_email,mobile = s_mobile,address = s_address,account_no =s_account,ifsc = s_ifsc,
+            s_acholdername = s_acholder,password = s_password,s_pic = s_pic)
+            reseller.save()
+            # else:
+            #     msg="email already exists"              
 
         if 'signin' in request.POST:
 
@@ -103,7 +104,7 @@ def view_cart(request):
         sum=sum+i.total_price
 
     #gt=AddCart.objects.aaggregate(grt =Sum( F('product__p_price') * F('qty')))
-    gt=cart2.aaggregate(grt=Sum(F('total_price')))   
+    #gt=cart2.aaggregate(grt=Sum(F('total_price')))   
 
     return render(request,'customer/my_cart.html',{'cart_items':cart2,'gt':sum})
     
@@ -145,9 +146,11 @@ def product_detail(request,product_id):
 def my_ac(request):
     customer_P=Customer.objects.get(id=request.session['c_id']) #select * from table where     
     return render(request,'customer/my_account.html',{'customer_details':customer_P})
+    
 @auth_customer
 def edit_form(request):
     return render(request,'customer/editform.html')
+
 @auth_customer
 def select_address(request):
     customer_address=Customer.objects.get(id=request.session['c_id']) #select * from table where
@@ -163,3 +166,34 @@ def c_logout(request):
     request.session.flush()
     return redirect('customer:home')
 
+def email_exist(request):
+    email = request.POST['email']
+
+    e_exists = Customer.objects.filter(email = email).exists()
+    
+    return JsonResponse({'status':e_exists})
+
+
+def change_qty(request):
+    quatity = int(request.POST['quantity'])
+    p_id = request.POST['p_id']
+    
+    stock = Product.objects.get(id=p_id)
+    print(stock.p_stock)
+    print(quatity)
+    if stock.p_stock > quatity:
+        changeqty = AddCart.objects.get(id=p_id)
+        changeqty.qty=quatity
+        changeqty.save()
+        status=True
+        cart2=AddCart.objects.annotate(total_price = F('product__p_price') * F('qty'))
+        sum=0
+        for i in cart2:
+            sum=sum+i.total_price
+        msg="qty update successfully"
+    
+        return JsonResponse({'data':sum ,'status':status})
+    else:
+        status=False
+        return JsonResponse({'status':status})
+   
