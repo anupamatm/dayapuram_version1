@@ -38,6 +38,7 @@
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,600,600italic,700,700italic,800'
 		rel='stylesheet' type='text/css'>
 	<link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+	<script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
 </head>
 
 <body class="cnt-home">
@@ -204,7 +205,7 @@
 												</div>
 												<div class="pull-left">
 													<div class="stock-box">
-														<span class="value">In Stock</span>
+														<span class="value" id="instock">In Stock</span>
 													</div>
 												</div>
 											</div>
@@ -254,12 +255,14 @@
 										<div class="row">
 
 											<div class="qty">
+												<label id="out"></label>
 												<span class="">Qty :</span>
 											</div>
 											<form action="" method="POST">
 												{% csrf_token %}
 												<div class="qty-count">
 													<div class="cart-quantity">
+														
 														<div class="quant-input">
 															<!-- <div class="arrows">
 																<div class="arrow plus gradient"><span class="ir"><i
@@ -267,12 +270,17 @@
 																<div class="arrow minus gradient"><span class="ir"><i
 																			class="icon fa fa-sort-desc"></i></span></div>
 															</div> -->
-															<input type="number" value="1" name="qty">
+															<div>
+																
+															</div>
+															<input type="number" value="1" name="qty" id="qty" onchange="checkStock('{{product.id}}')">
+															
 															
 														</div>
+														
 													</div>
 												</div>
-												<input type="hidden" value="{{product.id}}" name="pid" >
+												<input type="hidden" value="{{product.id}}" name="pid" id="pid">
 												<div class="add-btn">
 													
 															<button	class="btn btn-primary" type="submit"><i
@@ -320,6 +328,88 @@
 	<!-- For demo purposes – can be removed on production : End -->
 
 	<!-- JavaScripts placed at the end of the document so the pages load faster -->
+
+<script>
+/*	$(document).ready(function(){
+		$.ajaxSetup({
+			headers: {
+			  "X-CSRFToken": $('[name=csrfmiddlewaretoken]').val()
+			}
+		  })
+		  
+		$('#qty').change(function(){
+			console.log('cccccccc')
+			var q=$('this').val()
+			var id=$('#pid').val()
+			$.ajax({
+				type: 'POST',
+				url: "{% url 'customer:change_qty' %}",
+				data: {
+				'quantity': qty,
+				'p_id' :id
+				},
+				success: function (response) {
+				
+					console.log(response.status)
+					if(response.status == true)
+					{
+					
+					$('#out').text("")
+					}
+					else if(response.status == false){
+						$('#out').css('color','red')
+						$('#out').text("out of stock")
+
+					}																	
+
+					//console.log(sub)
+	  
+			}								
+
+		} )
+		})
+	})*/
+
+	function checkStock(id){		
+			
+			var qty=$('#qty').val()
+			var id=$('#pid').val()
+			console.log(id,qty)
+			$.ajax({
+				type: 'POST',
+				url: "{% url 'customer:change_qty' %}",
+				data: {
+				'quantity': qty,
+				'p_id' :id
+				},
+				success: function (response) {
+				
+					console.log(response.status)
+					if(response.status == true)
+					{
+					
+					$('#out').text("")
+					$('#instock').text("In stock")
+					}
+					else if(response.status == false){
+						$('#out').css('color','red')
+						$('#out').text("out of stock")
+						$('#instock').text("out of stock")
+						$('#instock').css('color','red')
+
+					}																	
+
+					//console.log(sub)
+	  
+			}								
+
+		} )
+	
+	}
+	
+
+</script>
+
 	<script src="{% static 'js/jquery-1.11.1.min.js' %}"></script>
 
 	<script src="{% static 'js/bootstrap.min.js' %}"></script>

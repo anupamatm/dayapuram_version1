@@ -67,28 +67,43 @@
 									{% for item in cart_items %}
 									 
 									<tr >
+
+										<input type="number" hidden value="{{item.product.id}}" id="p_id">
+
 										<td class="romove-item"><a href="{% url 'customer:del_cart_item' item.product.id %}" title="cancel" class="icon"><i
 													class="fa fa-trash-o"></i></a></td>
+
 										<td class="cart-image">
 											<a class="entry-thumbnail" href="detail.html">
 												<img src="{{ item.product.p_image.url }}" alt="image">
 											</a>
 										</td>
+
 										<td class="cart-product-name-info">
 											<h4 class='cart-product-description'>{{item.product.p_name|title}}</h4>
 											
 										</td>
-										<td class="cart-product-edit">{{item.qty}} No{{item.qty|pluralize}}</td>
+										<td class="cart-product-edit">
+											<input type="number" class="update-qty"  data-item="{{item.product.id}}" value="{{item.qty}}"  id="qty_{{item.product.id}}">
+											<span id="out_{{item.product.id}}" ></span>
+										</td>
+											   
 										
 										<td class="cart-product-sub-total" id="st"><span
-												class="cart-sub-total-price"></span> Rs:{{item.product.p_price}}</td>
+												class="cart-sub-total-price"></span> Rs:{{item.product.p_price}}
+											<input type="number" name="" value="{{item.product.p_price}}" hidden id="price_{{item.product.id}}"></td>
 									
 									
-										<td class="cart-product-grand-total"><span	class="cart-grand-total-price"  id="total"> </span>Rs:{{item.total_price}} </td>		
+										<td class="cart-product-grand-total"><span	class="cart-grand-total-price"  id="total_{{item.product.id}}">Rs:{{item.total_price}} </span> </td>		
 																											
 									</tr>															
 																	
 									{% endfor %}
+
+
+
+
+
 								</tbody><!-- /tbody -->
 
 								<tfoot>
@@ -107,6 +122,100 @@
 							</table><!-- /table -->
 						</div>
 					</div><!-- /.shopping-cart-table -->
+
+					
+
+					<script>
+
+						/*function updateProduct(pid){
+							console.log(pid)
+						}*/
+						/*$(document).ready(function(){
+							$.ajaxSetup({
+								headers: {
+								  "X-CSRFToken": $('[name=csrfmiddlewaretoken]').val()
+								}
+							  })
+							  console.log('xmkdsmckdmf ')
+							$('#qty').change(function (){
+
+								var quantity = $('#qty').val()
+								console.log(quantity)
+								var p_id = $('#p_id').val() 
+								var sub_total = $('#sub_t').val()
+								console.log(sub_total)
+
+								$.ajax({
+									type: 'POST',
+								    url: "{% url 'customer:change_qty' %}",
+								    data: {
+									'quantity': quantity,
+									'p_id' :p_id
+								    },
+								    success: function (response) {	
+										sub = 	quantity * sub_total
+										$('#total').text(sub)
+						  
+								}
+
+								})
+
+							} )
+
+
+						})*/
+					$(document).on('click','.update-qty',function(){
+							//console.log(qty,pid)
+							$.ajaxSetup({
+								headers: {
+								  "X-CSRFToken": $('[name=csrfmiddlewaretoken]').val()
+								}
+							  })
+							  
+							    var id = $(this).attr('data-item')
+
+								//var qty = $('#qty').val()
+								var qty=$("#qty_"+id).val()
+
+								//console.log(qty)
+								//var id = $('#p_id').val()								
+								//var _pId=$(this).attr('data-item'); 
+								var price = $('#price_'+id).val()
+								//console.log(id,qty ,price)
+
+								$.ajax({
+									type: 'POST',
+								    url: "{% url 'customer:change_qty' %}",
+								    data: {
+									'quantity': qty,
+									'p_id' :id
+								    },
+								    success: function (response) {
+									
+										console.log(response.status)
+										if(response.status == true)
+										{
+											sub = 	qty * price
+										$('#total_'+id).text("Rs:"+sub)
+										$('#grand_total').text("Rs:"+response.data)
+										$('#out_'+id).text("")
+										}
+										else if(response.status == false){
+											$('#out_'+id).css('color','red')
+											$('#out_'+id).text("out of stock")
+
+										}																	
+
+										//console.log(sub)
+						  
+								}								
+
+							} )
+
+						}) 
+					</script>
+
+
 					<div class="col-md-12 col-sm-12 estimate-ship-tax">
 						<div class="col-md-8 col-sm-12 cart-shopping-total"></div>
 
@@ -119,7 +228,7 @@
 											
 											<div class="cart-grand-total">
 												
-												Grand Total<span class="inner-left-md">Rs:{{gt}}</span>
+												Grand Total<span class="inner-left-md" id="grand_total">Rs:{{gt}}</span>
 											</div>
 										</th>
 									</tr>

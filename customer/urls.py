@@ -15,6 +15,8 @@ urlpatterns = [
     path('view_cart',views.view_cart, name='view_cart'),
     path('del_cart_item/<int:product_id>',views.del_cart_item, name='del_cart_item'),
     path('select_address',views.select_address, name='select_address'),
-    path('edit_address',views.edit_addresss, name='edit_address')
-    
+    path('edit_address',views.edit_addresss, name='edit_address'),
+    path('e_exists',views.email_exist,name="e_exists"),
+    path('change_qty',views.change_qty,name="change_qty"),
+  
 ]

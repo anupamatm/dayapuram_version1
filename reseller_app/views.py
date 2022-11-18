@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 
 from reseller_app.models import Product, Reseller
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -49,8 +50,21 @@ def add_product(request):
 def my_order(request):
     return render(request,'reseller_app/my_orders.html')
 
+
 def update_stock(request):
-    return render(request,'reseller_app/update_stock.html')
+    msg=''
+    if request.method == 'POST':
+        id = request.POST['pno'] 
+        print(id)
+        c_stock =int(request.POST['c_stock'])
+        print(c_stock)
+        n_stock =int( request.POST['n_stock'])
+        u_stock =Product.objects.get(id=id)
+        u_stock.p_stock = c_stock + n_stock
+        u_stock.save()
+        msg="stock updated successfully"
+    return render(request,'reseller_app/update_stock.html',{'msg':msg})
+
 
 def recent_orders(request):
     return render(request,'reseller_app/recent_orders.html')
@@ -75,6 +89,32 @@ def seller_logout(request):
     del request.session['s_id']
     request.session.flush()
     return redirect('customer:home')
+
+def get_product(request): 
+             
+    cat=request.POST['category']
+
+    pno=Product.objects.filter(p_category=cat)   
+    
+    data=[{'id':pno1.id,'p_number':pno1.p_number} for pno1 in pno ]
+    return JsonResponse({'data':data})
+
+def get_stock(request): 
+         
+    pid=request.POST['p_no']   
+    stock=Product.objects.get(id=pid)
+  
+    data=[{'p_stock':stock.p_stock}]
+    return JsonResponse({'data':data})
+    
+
+
+   
+    
+
+
+
+
 
  
  
