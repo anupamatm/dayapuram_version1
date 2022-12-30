@@ -26,7 +26,8 @@ def add_product(request):
             pr_description = request.POST['p_description']
             pr_price = request.POST['p_price']
             pr_stock = request.POST['p_astock']
-            pr_photo = request.FILES['p_photo']  
+            pr_photo = request.FILES['p_photo']
+            pr_category = request.POST['catg']
 
             product_exist = Product.objects.filter(p_number=pr_number).exists()  
             if not product_exist:
@@ -37,6 +38,7 @@ def add_product(request):
                     p_price = pr_price,
                     p_stock = pr_stock,
                     p_image = pr_photo,
+                    p_category = pr_category,
                     seller_id_id = request.session['s_id'] )                
                 add_products.save()
                 msg="Product Added Succesfully"

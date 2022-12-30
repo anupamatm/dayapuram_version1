@@ -95,7 +95,21 @@ def my_cart(request):
     return redirect('customer:view_cart') 
 
 @auth_customer
-def view_cart(request):    
+def view_cart(request):  
+    #F() can be used to create dynamic fields on your models by combining different fields with arithmetic:  
+    #An F() object represents the value of a model field, transformed value of a model field, or annotated column. 
+    # It makes it possible to refer to model field values and perform database operations using them without actually 
+    # having to pull them out of the database into Python memory.
+
+    #Instead, Django uses the F() object to generate an SQL expression that describes the
+    #  required operation at the database level.
+
+
+    #In Django, annotations are used to add additional columns to queryset objects 
+    # while querying. Consider a situation where you need to retrieve a list of hotel 
+    # rooms and with average ratings to each of those rooms there in that situation we use
+    #  annotate () the method provided by Django.
+
     cart2=AddCart.objects.annotate(total_price = F('product__p_price') * F('qty'))
     sum=0
     for i in cart2:
@@ -129,7 +143,7 @@ def product_detail(request,product_id):
         customer_id = request.session['c_id'])
 
         if 'c_id' not in request.session: 
-            msg="plase login"    
+            msg="please login"    
             return render(request,'customer/product_detail.html',{'product':product_detail,'error':msg})
         else:  
             product_exist=AddCart.objects.filter(product_id=p_id).exists()
@@ -158,15 +172,15 @@ def edit_account(request):
         customer_edit.last_name = request.POST['edit_lname']
         customer_edit.email = request.POST['edit_email']
         customer_edit.mobile = request.POST['edit_mobile']
-        customer_edit.address = request.POST['edit_address']   
+        customer_edit.address = request.POST['edit_address'] 
         customer_edit.save()
         return redirect('customer:my-account')
 
     customer_edit1=Customer.objects.get(id=request.session['c_id'])
     # view for save changes
     return render(request,'customer/editaccount.html',{'edit_details':customer_edit1})
-    customer_P=Customer.objects.get(id=request.session['c_id']) #select * from table where     
-    return render(request,'customer/my_account.html',{'customer_details':customer_P})
+    # customer_P=Customer.objects.get(id=request.session['c_id']) #select * from table where     
+    # return render(request,'customer/my_account.html',{'customer_details':customer_P})
     
 @auth_customer
 def edit_form(request):
@@ -230,7 +244,7 @@ def change_qty(request):
     print(stock.p_stock)
     print(quatity)
     if stock.p_stock > quatity:
-        changeqty = AddCart.objects.get(id=p_id)
+        changeqty = AddCart.objects.get(product_id=p_id)
         changeqty.qty=quatity
         changeqty.save()
         status=True
