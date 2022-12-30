@@ -18,32 +18,34 @@ class AddCart(models.Model):
     customer = models.ForeignKey(Customer, on_delete = models.CASCADE)
     qty = models.IntegerField(default=1)
 
-class Addresslist(models.Model):
-    customer = models.ForeignKey(Customer, on_delete = models.CASCADE)
-    selected_address = models.CharField(max_length=200)
+    def __str__ (self):
+        return 'MyClass(x=' + AddCart.product + ' ,y=' + AddCart.qty + ')'
+
+
+
 
 class Order(models.Model):
+    customer =models.ForeignKey(Customer,on_delete=models.CASCADE)
+    amount = models.FloatField(default=0)
+    status = models.CharField(max_length=20,default="pending")
+    provider_order_id = models.CharField( max_length=40,default='' )
+    payment_id = models.CharField(max_length=36,default='')
+    signature_id = models.CharField(max_length=128,default='' )
+
+    def __str__(self):
+        return f"{self.id}-{self.name}-{self.status}"
+
+
+
+class Order_detail(models.Model):
     customer = models.ForeignKey(Customer,on_delete=models.CASCADE)
     productid = models.ForeignKey(Product,on_delete=models.CASCADE)
-    address = models.ForeignKey(Addresslist,on_delete=models.CASCADE)
+    price = models.FloatField(default=0)
     quantity = models.IntegerField()
-    status = models.CharField(max_length=20,default="placed") #update after payment confirmed
-    
-
-class Payment(models.Model):
-    order = models.ForeignKey(Order,on_delete=models.CASCADE)
-    total_amount = models.FloatField()
     date = models.DateField(default=date.today)
-    p_status = models.CharField(max_length=20,default="fail")
-    
-
-class Order_details(models.Model):
-    order = models.ForeignKey(Order,on_delete=models.CASCADE)
-    payment = models.ForeignKey(Payment,on_delete=models.CASCADE)
-    customer = models.ForeignKey(Customer,on_delete=models.CASCADE)
-    address = models.ForeignKey(Addresslist,on_delete=models.CASCADE)
-
-
+    status = models.CharField(max_length=20,default="pending") #update after payment confirmed
+    payment_type = models.CharField(max_length=20,default='')
+    order=models.ForeignKey(Order,on_delete=models.CASCADE,default=0)
  
 
 

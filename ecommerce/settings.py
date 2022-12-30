@@ -146,3 +146,6 @@ EMAIL_HOST_PASSWORD = 'scwcxkyhwkxtiext'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+RAZORPAY_KEY_ID ='rzp_test_wqYyYm6F0Zykdj'
+RAZORPAY_KEY_SECRET = 'dTNHIuiBxyDPgnZhJKUReWdk'

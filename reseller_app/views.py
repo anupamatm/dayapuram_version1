@@ -90,6 +90,7 @@ def get_product(request):
     pno=Product.objects.filter(p_category=cat)   
     
     data=[{'id':pno1.id,'p_number':pno1.p_number} for pno1 in pno ]
+    
     return JsonResponse({'data':data})
 
 def get_stock(request): 

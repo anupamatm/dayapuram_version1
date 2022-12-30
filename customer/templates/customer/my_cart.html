@@ -181,7 +181,7 @@
 								//var id = $('#p_id').val()								
 								//var _pId=$(this).attr('data-item'); 
 								var price = $('#price_'+id).val()
-								//console.log(id,qty ,price)
+								console.log(id,qty ,price)
 
 								$.ajax({
 									type: 'POST',
@@ -190,8 +190,7 @@
 									'quantity': qty,
 									'p_id' :id
 								    },
-								    success: function (response) {
-									
+								    success: function (response) {									
 										console.log(response.status)
 										if(response.status == true)
 										{
@@ -237,7 +236,7 @@
 									<tr>
 										<td>
 											<div class="cart-checkout-btn pull-right">
-												<a href="{% url 'customer:select_address' %}"><button type="submit" class="btn btn-primary checkout-btn">PROCCED TO
+												<a href="{% url 'customer:checkout' %}"><button type="submit" class="btn btn-primary checkout-btn">PROCCED TO
 													CHEKOUT</button></a>
 												<span class="">Checkout with multiples address!</span>
 											</div>
