@@ -3,10 +3,13 @@ from itertools import product
 from urllib import request
 from django.shortcuts import render,redirect
 from . decorators import auth_customer
-from customer.models import AddCart, Customer
+from customer.models import AddCart, Customer, Order, Order_detail
 from reseller_app.models import Product, Reseller
 from django.db.models import F,Sum
 from django.http import JsonResponse
+import razorpay
+from django.conf import settings
+
 
 # Create your views here.
 
@@ -114,12 +117,11 @@ def view_cart(request):
     sum=0
     for i in cart2:
         sum=sum+i.total_price
-
+    
     #gt=AddCart.objects.aaggregate(grt =Sum( F('product__p_price') * F('qty')))
-    gt=cart2.aaggregate(grt=Sum(F('total_price'))) 
-
-    cart_product_count = AddCart.objects.all().count()
-    return render(request,'customer/my_cart.html',{'cart_items':cart2,'gt':sum,'cart_count':cart_product_count})
+    #gt=cart2.aaggregate(grt=Sum(F('total_price')))   
+    request.session['gt']=sum
+    return render(request,'customer/my_cart.html',{'cart_items':cart2,'gt':sum})
     
 @auth_customer
 def del_cart_item(reqest,product_id):
@@ -129,8 +131,11 @@ def del_cart_item(reqest,product_id):
 
 @auth_customer
 def my_order(request):
-    cart_product_count = AddCart.objects.all().count()
-    return render(request,'customer/my_orders.html',{'cart_count':cart_product_count})
+
+    orders=Order_detail.objects.filter(customer_id=request.session['c_id'])
+
+    return render(request,'customer/my_orders.html',{'orders':orders})
+
 @auth_customer
 def product_detail(request,product_id):
     if request.method == "POST":
@@ -221,7 +226,9 @@ def order_product(request):
 
 @auth_customer
 def c_payment(request):
-    return render(request,'customer/payment.html')
+    name=Customer.objects.get(id=request.session['c_id']).first_name
+    amount=request.session['gt']
+    return render(request,'customer/payment.html',{'nmae':name,'amount':amount})
 
 def c_logout(request):
     del request.session['c_id']
@@ -237,12 +244,14 @@ def email_exist(request):
 
 
 def change_qty(request):
+
     quatity = int(request.POST['quantity'])
     p_id = request.POST['p_id']
     
     stock = Product.objects.get(id=p_id)
     print(stock.p_stock)
-    print(quatity)
+    print(quatity,p_id)
+    
     if stock.p_stock > quatity:
         changeqty = AddCart.objects.get(product_id=p_id)
         changeqty.qty=quatity
@@ -258,4 +267,99 @@ def change_qty(request):
     else:
         status=False
         return JsonResponse({'status':status})
+
+def order_payment(request):
+    if request.method == "POST":
+        c_id = request.session['c_id']
+        amount = request.POST['total']
+        order_recipt="order_reciptid_11"
+        notes={'shipping address':'bomalahalli,bangolre'}
+
+        products= Order.objects.filter(customer_id=request.session['c_id'],status='pending')
+
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+        payment = client.order.create(
+            {"amount": int(amount) * 100, "currency": "INR", "payment_capture": "1",'notes':notes}
+        )
+
+        customer_id=request.session['c_id']
+        products=AddCart.objects.filter(customer_id=customer_id) 
    
+        for pro in products:
+
+            print(pro.product_id)
+
+            order=Order_detail(customer_id=customer_id,
+                        productid_id=pro.product_id,
+                        price=pro.product.p_price,
+                        quantity=pro.qty,
+                        status="order_pending",
+                        payment_type="Razorpay",
+                        order_id=payment.id
+            )
+            order.save()
+            products.delete()
+        print(payment)
+        return JsonResponse(payment)
+
+
+        # order = Order.objects.create(
+        #     name=name, amount=amount, provider_order_id=payment_order["id"]
+        # )
+        # order.save()
+        # return render(
+        #     request,
+        #     "payment.html",
+        #     {
+        #         "callback_url": "http://" + "127.0.0.1:8000" + "/razorpay/callback/",
+        #         "razorpay_key":settings.RAZORPAY_KEY_ID,
+        #         "order": order,
+        #     },
+        # )
+        
+def updatepayment(request):
+    user_id=request.session['c_id']
+    Order.objects.filter(customer_id=user_id, status='pending').update(status="paid")
+    Order_detail.objects.filter(customer_id=user_id, status='pending').update(status='paid')
+    return JsonResponse({'resp':'sucsses'})
+
+
+def checkout(request):
+    customer_id=request.session['c_id']
+
+    od=Order(customer_id=customer_id,amount=request.session['gt'],status='pending')
+    od.save()
+    request.session['oid']= od.id
+    products=AddCart.objects.filter(customer_id=customer_id) 
+
+
+    for pro in products:
+
+        print(pro.product_id)
+
+        order=Order_detail(customer_id=customer_id,
+                    productid_id=pro.product_id,
+                    price=pro.product.p_price,
+                    quantity=pro.qty,
+                    status="order_pending",
+                    payment_type="Razorpay",
+                    order_id=od.id        
+                    )
+        order.save()
+    products.delete()
+
+    name=Customer.objects.get(id=request.session['c_id']).first_name
+    amount=request.session['gt']
+    return render(request,'customer/payment.html',{'nmae':name,'amount':amount})  
+
+def update(request):
+    user_id=request.session['c_id']
+    Order.objects.filter(id=request.session['oid'],customer_id=user_id, status='pending').update(status="paid")
+
+    Order_detail.objects.filter(customer_id=user_id, status='order_pending',order_id=request.session['oid']).update(status='paid')
+
+    orders=Order_detail.objects.filter(customer_id=request.session['c_id'])
+
+    return render(request,'customer/my_orders.html',{'orders':orders})
+

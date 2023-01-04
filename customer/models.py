@@ -18,13 +18,35 @@ class AddCart(models.Model):
     customer = models.ForeignKey(Customer, on_delete = models.CASCADE)
     qty = models.IntegerField(default=1)
 
+    def __str__ (self):
+        return 'MyClass(x=' + AddCart.product + ' ,y=' + AddCart.qty + ')'
+
+
+
+
 class Order(models.Model):
+    customer =models.ForeignKey(Customer,on_delete=models.CASCADE)
+    amount = models.FloatField(default=0)
+    status = models.CharField(max_length=20,default="pending")
+    provider_order_id = models.CharField( max_length=40,default='' )
+    payment_id = models.CharField(max_length=36,default='')
+    signature_id = models.CharField(max_length=128,default='' )
+
+    def __str__(self):
+        return f"{self.id}-{self.name}-{self.status}"
+
+
+
+class Order_detail(models.Model):
     customer = models.ForeignKey(Customer,on_delete=models.CASCADE)
     productid = models.ForeignKey(Product,on_delete=models.CASCADE)
-    address = models.CharField(max_length=200, default="")
+    price = models.FloatField(default=0)
     quantity = models.IntegerField()
-    status = models.CharField(max_length=20,default="") #update after payment confirmed
     date = models.DateField(default=date.today)
-    
+    status = models.CharField(max_length=20,default="pending") #update after payment confirmed
+    payment_type = models.CharField(max_length=20,default='')
+    order=models.ForeignKey(Order,on_delete=models.CASCADE,default=0)
+ 
+
 
 

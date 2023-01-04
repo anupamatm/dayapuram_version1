@@ -23,6 +23,6 @@ class Product(models.Model):
     p_number = models.BigIntegerField()
     p_details = models.CharField(max_length=300)
     p_price = models.BigIntegerField()
-    p_stock = models.BigIntegerField()
+    p_stock = models.FloatField(default=0)
     p_image = models.ImageField(upload_to='product/')
     date = models.DateField(default=date.today)
